@@ -1,6 +1,6 @@
 <template>    
   <div id="stats" ref="stats">
-    <div class="close" @click="close()">
+    <div class="close-wrapper" @click="close()">
       <span>X</span>
     </div>
     <div class="arrow left" v-if="currentPage > 0" @click="changePage(-1)"></div>
@@ -58,37 +58,40 @@ export default {
 @import '../assets/sass/styles.scss';
 
 #stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   width: 450px;
-  height: 556px;
+  height: 500px;
   top: 50%;
   left: 50%;
-  margin-top: -276px;
+  margin-top: -250px;
   margin-left: -225px;
   border: 4px solid #fff;
   box-shadow: 0.31rem 0.31rem 0.31rem 0 rgba(170, 170, 170, 0.8);
   background-color: $lightBlue;
   z-index: 500;
 
-  .close {
+  .close-wrapper {
     font-family: 'Open Sans Condensed', sans-serif;
-    position: relative;
-    left: 416px;
-    top: 13px;
+    position: absolute;
+    right: 0;
+    top: 7px;
     width: 30px;
     font-weight: bold;
     font-size: 2rem;
     cursor: pointer;
-    margin-bottom: 40px;
+    color: $grey;
 
     &:hover {
-      opacity: 0.5;
+      opacity: 0.8;
     }
   }
 
   .arrow {
     position: absolute;
-    top: 270px;
+    top: 235px;
     border-top: 15px solid transparent;
     border-bottom: 15px solid transparent;
     cursor: pointer;
@@ -118,7 +121,6 @@ export default {
 
   .page {
     width: 340px;
-    margin: -24px auto auto auto;
     padding: 10px;
     background-color: #fff;
 

@@ -1,20 +1,28 @@
 <template>
   <div id="app">
-    <div v-if="part === 0">
-      <div class="start-button" @click="startGame()">
-        <span>LEARN A WORD</span>
+    <div class="container">
+      <div v-if="part === 0" id="intro-screen">
+        <div class="start-button" @click="startGame()">
+          <span>LEARN A WORD</span>
+        </div>
+        <div class="menu">
+          <div class="img-wrapper">
+            <img src="./assets/img/dictionary/bars.png" id="bars" @click="openMenu('stats')">
+          </div>
+          <div class="img-wrapper">
+            <img src="./assets/img/hangman/cog.png" id="cog" @click="openMenu('settings')">
+          </div>
+          <div class="img-wrapper">
+            <img src="./assets/img/puzzle/puzzle-piece2.png" id="puzzle" @click="openMenu('puzzle')">
+          </div>
+        </div>
       </div>
-      <div class="menu">
-        <img src="./assets/img/dictionary/bars.png" id="bars" @click="openMenu('stats')">
-        <img src="./assets/img/hangman/cog.png" id="cog" @click="openMenu('settings')">
-        <img src="./assets/img/puzzle/puzzle-piece2.png" id="puzzle" @click="openMenu('puzzle')">
-      </div>
+      <hangman v-if="part === 1" :word="word" :hangmanSettings="hangmanSettings"></hangman>
+      <sentences v-if="part === 2" :word="word"></sentences>
+      <stats v-if="currentMenu === 'stats'"></stats>
+      <settings v-if="currentMenu === 'settings'" :hangmanSettings="hangmanSettings"></settings>
+      <puzzle v-if="currentMenu === 'puzzle'" :word="word" :wordIndex="wordIndex" :autoDisplay="autoDisplayPuzzle"></puzzle>
     </div>
-    <hangman v-if="part === 1" :word="word" :hangmanSettings="hangmanSettings"></hangman>
-    <sentences v-if="part === 2" :word="word"></sentences>
-    <stats v-if="currentMenu === 'stats'"></stats>
-    <settings v-if="currentMenu === 'settings'" :hangmanSettings="hangmanSettings"></settings>
-    <puzzle v-if="currentMenu === 'puzzle'" :word="word" :wordIndex="wordIndex" :autoDisplay="autoDisplayPuzzle"></puzzle>
   </div>
 </template>
 
@@ -53,6 +61,7 @@ export default {
     bus.$on('closeSettings', (array) => {
       this.hangmanSettings = array;
       this.currentMenu = null;
+      // save hangman settings in local storage so when you open up the game again, you get your latest settings
       localStorage.setItem('hangmanSettings', JSON.stringify(array));
     });
     bus.$on('closeStats', () => this.currentMenu = null);
@@ -61,16 +70,18 @@ export default {
       this.autoDisplayPuzzle = false;
     });
     bus.$on('hangmanVictory', (boolean) => {
+      // if you win in hangman, open next part (dragging sentences), otherwise start from the beginning
       this.part = boolean ? 2 : 0;
     });
     bus.$on('sentencesFinished', () => {
       this.part = 0;
-      this.startAnew();
+      this.wordSolved();
     });
     bus.$on('reset', () => this.resetGame());
   },
   mounted() {
     this.items.forEach(item => {
+      // each word has a strength from 0 to 3, based on how many times you learned it
       item.strength = 0;
     });
     this.checkLocalStorage();
@@ -119,11 +130,12 @@ export default {
         this.changeStrengths();
       }
     },
-    startAnew() {
+    wordSolved() {
       let entry = this.items[this.wordIndex];
       if (entry.strength < 3) {
         this.items[this.wordIndex].strength++;
       }
+      // if the word was solved for the first time, get a new puzzle piece and show the puzzle to the user (auto display puzzle menu)
       if (entry.strength === 1) {
         this.currentMenu = 'puzzle';
         this.autoDisplayPuzzle = true;
@@ -141,7 +153,7 @@ export default {
       console.log("%c Good luck %c learning %c Slovene! ",  
       "background:white; border-left:1px solid black", 
       "background:blue; color:white;", 
-      "background:red; color:white;" );
+      "background:red; color:white;");
     }
   }
 }
@@ -160,12 +172,15 @@ export default {
   height: 100vh;
   font-family: 'Open Sans Condensed', sans-serif;
 
+  #intro-screen {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
   .start-button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -25px;
-    margin-left: -100px;
     width: 200px;
     height: 50px;
     text-align: center;
@@ -191,35 +206,22 @@ export default {
   }
 
   .menu {
-    position: absolute;
+    display: flex;
+    justify-content: space-between;
     width: 200px;
-    height: 70px;
-    left: 50%;
-    top: 65%;
-    margin-left: -100px;
-    margin-top: -35px;
+    margin-top: 30px;
 
+    .img-wrapper {
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      box-sizing: border-box;
 
-    #bars {
-      left: 0;
-    }
-
-    #cog {
-      left: 83px;
-    }
-
-    #puzzle {
-      left: 170px;
-    }
-
-    #bars, #cog, #puzzle {
-      padding-bottom: 15px;
-      position: absolute;
-      height: 35px;
-      cursor: pointer;
+      #bars, #cog, #puzzle {
+        height: 35px;
+      }
 
       &:hover {
-
         border-bottom: 5px solid $blue;
       }
     }

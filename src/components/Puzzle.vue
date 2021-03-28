@@ -1,6 +1,6 @@
 <template>    
   <div id="puzzle-menu">
-    <div class="close" @click="close()">
+    <div class="close-wrapper" @click="close()">
       <span>X</span>
     </div>
     <div class="grid">
@@ -31,11 +31,6 @@ export default {
       type: Boolean
     }
   },
-  data() {
-    return {
-
-    }
-  },
   methods: {
     close() {
       bus.$emit('closePuzzle');
@@ -43,8 +38,9 @@ export default {
   },
   computed: {
     grid() {
+      // grid represents the puzzle layout - each subarray is a row, and each row has 6 items that are booleans - if the word corresponding to the puzzle piece has been learned, the boolean is set to true and so the puzzle piece is displayed
       let grid = [[], [], [], [], [], []];
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < grid.length; i++) {
         for (let j = 0; j < 6; j++) {
           let boolean = dictionary.items[i + j + 5 * i].strength > 0 ? true : false;
           grid[i].push(boolean);
@@ -61,6 +57,9 @@ export default {
 @import '../assets/sass/styles.scss';
 
 #puzzle-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   width: 400px;
   height: 400px;
@@ -73,10 +72,10 @@ export default {
   background-color: $gold;
   z-index: 500;
 
-  .close {
+  .close-wrapper {
     font-family: 'Open Sans Condensed', sans-serif;
-    position: relative;
-    left: 370px;
+    position: absolute;
+    right: 0;
     top: 6px;
     width: 30px;
     font-weight: bold;
@@ -90,11 +89,12 @@ export default {
   }
 
   .grid {
-    width: 300px;
+    width: 304px;
     border: 2px solid #fff;
     margin: auto;
 
     .row {
+      margin: 0;
       height: 50px;
 
       .piece {

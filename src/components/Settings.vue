@@ -1,7 +1,7 @@
 <template>
   <div id="settings" ref="settings">
     <div id="settings-all">
-      <div class="close" @click="close(false)">
+      <div class="close-wrapper" @click="close(false)">
         <span>X</span>
       </div>
       <div class="options">
@@ -68,7 +68,7 @@ export default {
   },
   computed: {
     difficultyHex() {
-      // 2 is a gold hex image, and 3 is a grey one
+      // 2 is a gold hex image (selected), and 3 is a grey one (unselected)
       return this.attempts === 10 ? [2, 3] : [3, 2];
     },
     startLetterHex() {
@@ -83,6 +83,9 @@ export default {
 @import '../assets/sass/styles.scss';
 
 #settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   width: 400px;
   height: 450px;
@@ -97,11 +100,11 @@ export default {
   z-index: 500;
   text-align: center;
 
-  .close {
+  .close-wrapper {
     font-family: 'Open Sans Condensed', sans-serif;
-    position: relative;
-    left: 360px;
-    top: 13px;
+    position: absolute;
+    right: 10px;
+    top: 7px;
     width: 30px;
     font-weight: bold;
     font-size: 2rem;
@@ -112,6 +115,9 @@ export default {
       opacity: 0.5;
     }
 
+    span {
+      color: #fff;
+    }
   }
 
   .options {

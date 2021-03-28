@@ -207,7 +207,7 @@ export default {
       border-bottom: 2px solid black;
       margin-right: 0.3rem;
       margin-left: 0.3rem;
-      min-width: 1.3rem;
+      min-width: 1.9rem;
       min-height: 1rem;
       padding: 0 0.3rem;
       display: inline-block;
@@ -260,7 +260,7 @@ export default {
         display: inline-block;
         text-align: center;
         min-width: 3rem;
-        top: 20px;
+        top: 10px;
         z-index: 100;
         user-select: none;
       }
@@ -283,6 +283,7 @@ export default {
       font-size: 25px;
       user-select: none;
       cursor: pointer;
+      text-decoration: underline;
 
       &:hover {
         color: $grey;
@@ -292,6 +293,7 @@ export default {
         opacity: 0.4;
         cursor: default;
         pointer-events: none;
+        text-decoration: none;
       }
     }
   }

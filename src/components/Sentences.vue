@@ -35,6 +35,7 @@
   /* eslint-disable */
 import { Draggable } from 'gsap/all'
 import { TweenLite } from 'gsap'
+import { gsap } from 'gsap'
 import { bus } from '../main'
 
 export default {
@@ -57,6 +58,7 @@ export default {
     this.pushValues();
   },
   mounted() {
+    gsap.registerPlugin(Draggable);
     this.doDragAndDrop();
   },
   methods: {
@@ -87,6 +89,7 @@ export default {
             for (let j = 0; j < solutionLength; j++) {
               let field = document.getElementById(`field${j}`);
               let offsetDiff = 160 * i;
+              
               if (this.hitTest(`#field${j}`, '50%') && !fieldStatus[j].correctlyTaken) {
                 TweenLite.to(`#button${i}`, 0.3, { x:field.offsetLeft - offsetDiff, y:80 });
                 buttonLanding = true;
@@ -113,6 +116,9 @@ export default {
           this.correctItem[this.fieldStatus[i].takenBy] = true;
           correctAnswers++;
           this.$forceUpdate();
+        }
+        else if (this.fieldStatus[i].takenBy === null) {
+          continue;
         }
         else {
           TweenLite.to(`#button${this.fieldStatus[i].takenBy}`, 1, { x:0, y:0 });
@@ -250,6 +256,7 @@ export default {
       color: #000;
       font-size: 25px;
       user-select: none;
+      text-decoration: underline;
 
       &:hover {
         color: $grey;
